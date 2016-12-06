@@ -1,4 +1,4 @@
-function [grid, solution] = convection_diffision_dirichlet(U, L, k, N, phi_left, phi_right, method, varargin)
+function [grid, solution] = convection_diffusion_dirichlet(U, L, k, N, phi_left, phi_right, method, varargin)
 
   h = L / N;
   P = U * h / k;
