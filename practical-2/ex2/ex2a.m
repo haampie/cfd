@@ -26,6 +26,9 @@ function ex2a()
 
   figure;
   loglog(h_values, error_values(1, :), 'b-*');
+  title(sprintf('U = %d, k = %2.2f, L = %d, phi_0 = %d, phi_L = %d', U, k, L, phi_0, phi_L))
+  xlabel('h')
+  ylabel('error')
   legend('b3')
   
   % Dump the slope (~= 2)
