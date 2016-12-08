@@ -1,4 +1,5 @@
-function [grid, solution] = convection_diffusion_dirichlet(U, L, k, N, phi_left, phi_right, method, varargin)
+function [grid, solution] = convection_diffusion_dirichlet(U, L, k, N, ...
+    phi_left, phi_right, method, varargin)
 
   h = L / N;
   P = U * h / k;
@@ -83,7 +84,8 @@ function [grid, solution] = convection_diffusion_dirichlet(U, L, k, N, phi_left,
 
   solution = [
     phi_left; 
-    pdma(subsub_diagonal, sub_diagonal, diagonal, super_diagonal, supersuper_diagonal, rhs, N - 1); 
+    pdma(subsub_diagonal, sub_diagonal, diagonal, super_diagonal, ...
+        supersuper_diagonal, rhs, N - 1); 
     phi_right
   ];
 

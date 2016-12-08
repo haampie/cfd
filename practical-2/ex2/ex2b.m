@@ -12,51 +12,64 @@ function ex2b()
   phi_L = 1;
 
   % But vary h
-  N_values = unique(floor(10 .^ (1 : 0.05 : 2)), 'sorted');
-  alpha_values = [0.5 0.6 0.7 0.8 0.95 1];
+  N = unique(floor(10 .^ (1 : 0.05 : 2)));
+  alpha = [0.5 0.6 0.7 0.8 0.95 1];
   
   % Holds the error for different values of N / h
-  error_values = zeros(length(alpha_values), length(N_values));
+  errors = zeros(length(alpha), length(N));
 
   % Calculate the error for multiple values of alpha
-  for alpha_idx = 1 : length(alpha_values)
+  for alpha_idx = 1 : length(alpha)
       
       % And multiple values of N
-      for N_idx = 1 : length(N_values)
+      for N_idx = 1 : length(N)
           
         % Compute the numerical solution
-        if alpha_values(alpha_idx) == 1
-            the_grid = linspace(0, 1, 1 + N_values(N_idx));
-            [x, y_central] = convection_diffusion_dirichlet(U, L, k, N_values(N_idx), phi_0, phi_L, 'central');
+        if alpha(alpha_idx) == 1
+            % Equidistant grid.
+            the_grid = linspace(0, 1, 1 + N(N_idx));
+            
+            % Compute numerical solution
+            [x, y_central] = convection_diffusion_dirichlet(U, L, k, ...
+                N(N_idx), phi_0, phi_L, 'central');
         else
             % Construct an exponentially refined mesh
-            the_grid = (-alpha_values(alpha_idx).^(2 : N_values(N_idx) + 1) + alpha_values(alpha_idx)) / (1 - alpha_values(alpha_idx));
+            the_grid = (-alpha(alpha_idx).^(2 : N(N_idx) + 1) ...
+                + alpha(alpha_idx)) / (1 - alpha(alpha_idx));
             the_grid = the_grid / the_grid(end);
             the_grid = [0 the_grid];
-            [x, y_central] = convection_diffusion_dirichlet(U, L, k, N_values(N_idx), phi_0, phi_L, 'central', the_grid);
+            
+            % Compute numerical solution
+            [x, y_central] = convection_diffusion_dirichlet(U, L, k, ...
+                N(N_idx), phi_0, phi_L, 'central', the_grid);
         end
         
         % Compute the exact solution
         y_exact = phi_0 + (phi_L - phi_0) * (1 - exp(Pe * x' ./ L)) ./ (1 - exp(Pe));
 
-        % Compute the error (vectorized for speed)
+        % Compute the error (vectorized)
         h_values = the_grid(2 : end) - the_grid(1 : end - 1);
-        error_values(alpha_idx, N_idx) = sqrt(sum(h_values .* (y_central(1 : end - 1)' - y_exact(1 : end - 1)').^2));
+        errors(alpha_idx, N_idx) = sqrt(sum(h_values .* ...
+            (y_central(1 : end - 1)' - y_exact(1 : end - 1)').^2));
       end
   end
   
   % Plot the errors
-  for row_idx = 1 : length(alpha_values)
+  for idx = 1 : length(alpha)
+      
+      % Plot N vs error.
       figure;
-      loglog(N_values, error_values(row_idx, :), '-*');
+      loglog(N, errors(idx, :), '-*');
       grid on
-      title(sprintf('U = %d, k = %2.2f, L = %d, alpha = %2.2f', U, k, L, alpha_values(row_idx)));
+      title(sprintf('U = %d, k = %2.2f, L = %d, alpha = %2.2f', U, k, ...
+          L, alpha(idx)));
       xlabel('N')
       ylabel('Error approximation')
       
-      fprintf('Alpha = %f', alpha_values(row_idx))
-      diff_e = log(error_values(row_idx, 2 : end)) - log(error_values(row_idx, 1 : end - 1));
-      diff_N = log(N_values(2 : end)) - log(N_values(1 : end - 1));
+      % Show the slope
+      fprintf('Alpha = %f', alpha(idx))
+      diff_e = log(errors(idx, 2 : end)) - log(errors(idx, 1 : end - 1));
+      diff_N = log(N(2 : end)) - log(N(1 : end - 1));
       diff_e ./ diff_N
   end
 end
