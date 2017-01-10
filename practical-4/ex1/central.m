@@ -13,6 +13,7 @@ function solution = central(params, method)
     sup_diag = zeros(method.N - 1, 1);
     ones_vec = ones(method.N - 1, 1);
 
+    % Switch spatial discretizations
     switch method.method
         case 'central'
             if method.uniform
