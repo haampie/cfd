@@ -50,7 +50,7 @@ function solution = unsteady_conv_diff(params, method)
     end
 
 
-    steps = floor(method.T / method.dt);
+    steps = floor(method.T / method.dt) + 1;
     solution = zeros(steps, method.N + 1);
     solution(1, :) = params.initial_condition;
 
