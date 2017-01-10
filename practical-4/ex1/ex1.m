@@ -1,4 +1,4 @@
-function central_test
+function ex1
     N = 10;
     initial_condition = linspace(0, 1, N + 1);
     initial_condition = rand(N + 1, 1);
@@ -25,7 +25,7 @@ function central_test
         'explicit', false ...
     );
 
-    solution = central(params, method);
+    solution = unsteady_conv_diff(params, method);
 
     plot(method.grid, solution(1 : 30 : end, :)', '-*');
 end

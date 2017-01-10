@@ -1,4 +1,4 @@
-function solution = central(params, method)
+function solution = unsteady_conv_diff(params, method)
     dx = params.L / method.N;
     
     % eta = params.u * method.dt / dx;
