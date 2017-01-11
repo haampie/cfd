@@ -77,11 +77,14 @@ function solution = unsteady_conv_diff(params, method)
         end
     else
         for step = 2 : steps
+
+            % Boundary conditions.
             rhs = solution(step - 1, 2 : method.N);
             rhs(1) = rhs(1) + method.dt * sub_diag(1) * params.phi_left;
             rhs(2) = rhs(2) + method.dt * ssub_diag(2) * params.phi_left;
             rhs(method.N - 1) = rhs(method.N - 1) + method.dt * sup_diag(method.N - 1) * params.phi_right;
 
+            % Solve Ax = b using PDMA.
             solution(step, 1) = params.phi_left;
             solution(step, 2 : method.N) = pdma( ...
                 -method.dt * ssub_diag, ...
