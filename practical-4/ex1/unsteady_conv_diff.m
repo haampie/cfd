@@ -58,21 +58,21 @@ function solution = unsteady_conv_diff(params, method)
 
     % Switch between explicit and implicit
     if method.explicit
+        
+        % Put the diagonals as rows a matrix so we can use vectorization.
+        diagonals = [ssub_diag'; sub_diag'; the_diag'; sup_diag'];
+
+        % Here we incorporate temporal discretization.
+        coeff = method.dt * diagonals;
+        coeff(3, :) = coeff(3, :) + 1;
+
+        % Compute A * x.
         for step = 2 : steps
             solution(step, 1) = params.phi_left;
-            solution(step, 2) = ...
-                    solution(step - 1, 1) * sub_diag(1) * method.dt + ...
-                    solution(step - 1, 2) * (1 + the_diag(1) * method.dt) + ...
-                    solution(step - 1, 3) * sup_diag(1) * method.dt;
-            
+            solution(step, 2) = solution(step - 1, 1 : 3) * coeff(2 : 4, 1);
             for idx = 3 : method.N
-                solution(step, idx) = ...
-                    solution(step - 1, idx - 2) * ssub_diag(idx - 1) * method.dt + ...
-                    solution(step - 1, idx - 1) * sub_diag(idx - 1) * method.dt + ...
-                    solution(step - 1, idx) * (1 + the_diag(idx - 1) * method.dt) + ...
-                    solution(step - 1, idx + 1) * sup_diag(idx - 1) * method.dt;
+                solution(step, idx) = solution(step - 1, idx - 2 : idx + 1) * coeff(:, idx - 1);
             end
-            
             solution(step, method.N + 1) = params.phi_right;
         end
     else
