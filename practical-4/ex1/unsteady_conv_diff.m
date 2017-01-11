@@ -31,7 +31,6 @@ function solution = unsteady_conv_diff(params, method)
                 sup_diag = 2 * params.k ./ (h_next .* h_sum) - params.u ./ h_sum;
             end
         case 'upwind'
-            ssub_diag = zeros(method.N - 1, 1);
             sub_diag = (params.k / dx ^ 2 + params.u / dx) * ones_vec;
             the_diag = (-2 * params.k / dx ^ 2 - params.u / dx) * ones_vec;
             sup_diag = params.k / dx ^ 2 * ones_vec;
