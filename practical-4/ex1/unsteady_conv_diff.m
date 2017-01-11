@@ -21,7 +21,7 @@ function solution = unsteady_conv_diff(params, method)
                 the_diag = -2 * params.k / dx ^ 2 * ones_vec;
                 sup_diag = (params.k / dx ^ 2 - params.u / (2 * dx)) * ones_vec;
             else
-                h = method.grid(2 : method.N + 1) - method.grid(1 : method.N);
+                h = method.grid(2 : method.N + 1)' - method.grid(1 : method.N)';
                 h_prev = h(1 : method.N - 1);
                 h_next = h(2 : method.N);
                 h_sum = h_prev + h_next;
