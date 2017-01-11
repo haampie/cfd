@@ -40,16 +40,19 @@ function solution = unsteady_conv_diff(params, method)
             the_diag = (-2 * params.k / dx ^ 2 - 3 * params.u / (2 * dx)) * ones_vec;
             sup_diag = params.k / dx ^ 2 * ones_vec;
 
+            % Central discretization at left boundary.
             ssub_diag(1) = 0;
             sub_diag(1) = params.k / dx ^ 2 + params.u / dx;
             the_diag(1) = -2 * params.k / dx ^ 2 - params.u / dx;
             sup_diag(1) = params.k / dx ^ 2;
         otherwise
-            error('Not supported method');
+            error('Method not supported');
     end
 
-
+    % Number of time steps.
     steps = floor(method.T / method.dt) + 1;
+
+    % solution(t, x) holds the numerical solution, starting with the initial condition.
     solution = zeros(steps, method.N + 1);
     solution(1, :) = params.initial_condition;
 
