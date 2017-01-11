@@ -1,10 +1,7 @@
 function ex1
     N = 10;
-    initial_condition = linspace(0, 1, N + 1);
-    initial_condition = rand(N + 1, 1);
-
-    my_grid = 1 - (2 .^ (5 : -0.5 : 0) - 1) / 31;
-    % my_grid = linspace(0, 1, N + 1);
+    my_grid = 1 - (2 .^ (linspace(5, 0, N + 1)) - 1) / 31;
+    initial_condition = my_grid; % g(x) = x as initial condition
 
     params = struct( ...
         'u', 10, ...
@@ -21,11 +18,14 @@ function ex1
         'grid', my_grid, ...
         'N', N, ...
         'T', 0.1, ...
-        'dt', 0.0001, ...
+        'dt', 0.001, ...
         'explicit', false ...
     );
 
     solution = unsteady_conv_diff(params, method);
-
-    plot(method.grid, solution(1 : 30 : end, :)', '-*');
+    
+    surf(method.grid, 0 : method.dt : method.T, solution)
+    xlabel('x');
+    ylabel('t');
+    zlabel('y');
 end
